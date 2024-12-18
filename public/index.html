@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Application</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="chat-container">
+    <div class="menu">
+      <h3>Chat Options</h3>
+      <button id="privateChatBtn">Private Chat</button>
+      <button id="groupChatBtn">Group Chat</button>
+    </div>
+
+    <!-- Chat section -->
+    <div id="chatSection">
+      <!-- Private Chat Form -->
+      <div id="privateChatForm" class="hidden">
+        <h3>Private Chat</h3>
+        <input type="text" id="privateSender" placeholder="Your Name">
+        <input type="text" id="privateReceiver" placeholder="Receiver's Name">
+        <button id="startPrivateChat">Start Chat</button>
+      </div>
+
+      <!-- Group Chat Form -->
+      <div id="groupChatForm" class="hidden">
+        <h3>Group Chat</h3>
+        <input type="text" id="groupName" placeholder="Group Name">
+        <button id="joinGroupChat">Join Group</button>
+      </div>
+
+      <!-- Chat Window -->
+      <div id="chatWindow" class="hidden">
+        <div id="messages"></div>
+        <input type="text" id="messageInput" placeholder="Type a message">
+        <button id="sendMessage">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
