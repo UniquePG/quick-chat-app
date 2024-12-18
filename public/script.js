@@ -68,3 +68,67 @@ socket.on("receive-message", ({ sender, message }) => {
   msg.textContent = `${sender}: ${message}`;
   messages.appendChild(msg);
 });
+
+
+
+
+//----------------------------------- with sender and receiver names -------------------------------//
+
+
+
+
+// const socket = io();
+
+// // UI Elements
+// const setUsernameForm = document.getElementById('setUsernameForm');
+// const chatForm = document.getElementById('chatForm');
+// const messages = document.getElementById('messages');
+// const roomInfo = document.getElementById('roomInfo');
+
+// let currentRoom = null;
+// let username = null;
+
+// // Set username
+// setUsernameForm.addEventListener('submit', (e) => {
+//   e.preventDefault();
+//   username = document.getElementById('username').value;
+//   socket.emit('setUsername', username);
+//   document.getElementById('usernameSection').style.display = 'none';
+//   document.getElementById('chatSection').style.display = 'block';
+// });
+
+// // Start a one-to-one chat
+// chatForm.addEventListener('submit', (e) => {
+//   e.preventDefault();
+//   const receiver = document.getElementById('receiver').value;
+//   const message = document.getElementById('message').value;
+
+//   if (!currentRoom) {
+//     const sender = username;
+//     socket.emit('startChat', { sender, receiver });
+//     currentRoom = `${sender}-${receiver}`;
+//   }
+
+//   if (message) {
+//     socket.emit('message', { roomName: currentRoom, message, sender: username });
+//     appendMessage(`You: ${message}`);
+//     document.getElementById('message').value = '';
+//   }
+// });
+
+// // Update chat status
+// socket.on('chatStatus', ({ sender, receiver, status }) => {
+//   roomInfo.innerHTML = `Chat between <b>${sender}</b> and <b>${receiver}</b> is <b>${status}</b>`;
+// });
+
+// // Receive messages
+// socket.on('message', ({ sender, message }) => {
+//   appendMessage(`${sender}: ${message}`);
+// });
+
+// // Append message to chat
+// function appendMessage(message) {
+//   const messageElement = document.createElement('li');
+//   messageElement.innerText = message;
+//   messages.appendChild(messageElement);
+// }

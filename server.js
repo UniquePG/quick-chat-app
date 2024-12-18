@@ -74,6 +74,8 @@
 
 
 //----------------------------------------- one to one and group message---------------------------------//
+
+
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -140,3 +142,72 @@ const PORT = process.env.PORT || 3002;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+
+
+//------------------------------ with the sender and reciver names -------------------------------------//
+// const express = require('express');
+// const http = require('http');
+// const { Server } = require('socket.io');
+// const app = express();
+// const server = http.createServer(app);
+// const io = new Server(server);
+
+// // Store active users and chats
+// const users = {}; // { socketId: username }
+// const activeChats = {}; // { roomName: { sender, receiver, status } }
+
+// app.use(express.static('public'));
+
+// // When a user connects
+// io.on('connection', (socket) => {
+//   console.log('A user connected:', socket.id);
+
+//   // When a user sets their username
+//   socket.on('setUsername', (username) => {
+//     users[socket.id] = username;
+//     console.log(`${username} has joined with ID: ${socket.id}`);
+//   });
+
+//   // Handle starting a one-to-one chat
+//   socket.on('startChat', ({ sender, receiver }) => {
+//     const roomName = `${sender}-${receiver}`;
+//     activeChats[roomName] = {
+//       sender,
+//       receiver,
+//       status: 'Pending',
+//     };
+//     socket.join(roomName);
+//     console.log(`Chat started between ${sender} and ${receiver}`);
+//     io.to(roomName).emit('chatStatus', activeChats[roomName]);
+//   });
+
+//   // Handle joining a one-to-one chat
+//   socket.on('joinChat', ({ receiver, sender }) => {
+//     const roomName = `${sender}-${receiver}`;
+//     if (activeChats[roomName]) {
+//       activeChats[roomName].status = 'Active';
+//       socket.join(roomName);
+//       console.log(`${receiver} has joined the chat with ${sender}`);
+//       io.to(roomName).emit('chatStatus', activeChats[roomName]);
+//     }
+//   });
+
+//   // Handle sending messages
+//   socket.on('message', ({ roomName, message, sender }) => {
+//     console.log(`Message from ${sender}: ${message}`);
+//     io.to(roomName).emit('message', { sender, message });
+//   });
+
+//   // Handle user disconnecting
+//   socket.on('disconnect', () => {
+//     console.log('A user disconnected:', socket.id);
+//     const username = users[socket.id];
+//     delete users[socket.id];
+//   });
+// });
+
+// const PORT = process.env.PORT || 3002;
+// server.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });

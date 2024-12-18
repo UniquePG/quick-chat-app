@@ -19,8 +19,10 @@
       <!-- Private Chat Form -->
       <div id="privateChatForm" class="hidden">
         <h3>Private Chat</h3>
-        <input type="text" id="privateSender" placeholder="Your Name">
-        <input type="text" id="privateReceiver" placeholder="Receiver's Name">
+        <div class="private_chat_inputs">
+            <input type="text" id="privateSender" class="private_input" placeholder="Your Name">
+            <input type="text" id="privateReceiver" class="private_input" placeholder="Receiver's Name">
+        </div>
         <button id="startPrivateChat">Start Chat</button>
       </div>
 
@@ -34,8 +36,11 @@
       <!-- Chat Window -->
       <div id="chatWindow" class="hidden">
         <div id="messages"></div>
-        <input type="text" id="messageInput" placeholder="Type a message">
-        <button id="sendMessage">Send</button>
+        <div id="bottom_btn">
+            <input type="text" id="messageInput" placeholder="Type a message">
+            <button id="sendMessage">Send</button>
+
+        </div>
       </div>
     </div>
   </div>

@@ -16,6 +16,44 @@ body {
     padding: 20px;
     width: 200px;
   }
+
+
+  #privateChatForm{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .private_chat_inputs{
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .private_input, #groupName{
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 5px;
+    border: 1px solid grey;
+    font-size: 16px;
+    margin-bottom: 15px;
+
+  }
+
+  #startPrivateChat, #joinGroupChat{
+    width: 50%;
+    padding: 12px 10px;
+    text-align: center;
+    background: green;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    border: 1px solid #fff;
+    border-radius: 10px
+  }
+
   
   .menu h3 {
     margin-bottom: 20px;
@@ -42,29 +80,95 @@ body {
   }
   
   .hidden {
-    display: none;
+    display: none !important;
   }
   
   #messages {
+    max-height: 400px;
+    overflow-y: auto;
     height: 400px;
-    overflow-y: scroll;
     border: 1px solid #ccc;
     padding: 10px;
     margin-bottom: 10px;
     background: #fff;
   }
+
+  #chatWindow{
+    width: 80%;
+  }
   
   #messageInput {
-    width: 80%;
+    width: 85%;
     padding: 10px;
     border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  #bottom_btn{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   
   #sendMessage {
-    padding: 10px;
+    padding: 10px 60px;
     border: none;
     background: #007bff;
     color: white;
     cursor: pointer;
+    border-radius: 10px;
   }
+  
+
+  @media screen and (max-width: 768px) {
+    .menu{
+        width: 120px;
+    }
+
+    #chatWindow{
+        width: 100%;
+      }
+
+      .private_chat_inputs{
+        flex-direction: column;
+      }
+      
+
+      .private_input, #groupName{
+        width: 86%;
+      }
+    #messageInput {
+        width: 100%;
+    }
+
+    #bottom_btn{
+        width: 100%;
+        flex-direction: column;
+
+        gap: 15px;
+      }
+
+
+
+      #privateChatForm, #groupChatForm{
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
   
