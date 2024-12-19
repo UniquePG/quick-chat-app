@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Private Chat</title>
+  <link rel="stylesheet" href="../css/privateChat.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <div class="chat-container">
+    <h3><a href="/"><i class="fa-solid fa-house"></i></a> Private Chat</h3>
+    <div class="private_chat_section">
+        <div class="left_section">
+            <div class="private_chat_inputs">
+              <input type="text" id="privateSender" class="private_input" placeholder="Your Name">
+              <input type="text" id="privateReceiver" class="private_input" placeholder="Partner's Name">
+            </div>
+            <button id="startChat">Start Chat</button>
+        </div>
+    
+        <div id="chatWindow" class="hidden">
+          <h4>Chat between <span id="senderName"></span> and <span id="receiverName"></span></h4>
+          <div id="messages"></div>
+          <div id="bottom_btn">
+            <input type="text" id="messageInput" placeholder="Type a message">
+            <button id="sendMessage">Send <i class="fa-solid fa-paper-plane"></i></button>
+          </div>
+        </div>
+
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="../js/privateChat.js"></script>
+</body>
+</html>

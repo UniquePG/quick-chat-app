@@ -7,14 +7,71 @@ body {
   
   .chat-container {
     display: flex;
+    flex-direction: column;
     height: 100vh;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  #header{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: #004494;
+    color: #fff;
+    font-weight: 800;
+
+  }
+
+  #header h2{
+    font-size: 25px;
+    margin: 0;
   }
   
   .menu {
+    border-radius: 8px;
     background: #007bff;
     color: white;
-    padding: 20px;
-    width: 200px;
+    padding: 20px 30px;
+    width: fit-content;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    box-shadow: 1px 1px 8px 2px #6e6d6d6e;
+  }
+
+  #chat-buttons{
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    width: 100%;
+    
+  }
+
+  #chat-buttons button{
+    width: 100%;
+    padding: 10px 70px;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    background: #008b;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.4s ease-in-out;
+  }
+
+
+
+  #chat-buttons button:hover{
+    background: rgba(0, 0, 136, 0.537);
   }
 
 
@@ -56,7 +113,9 @@ body {
 
   
   .menu h3 {
-    margin-bottom: 20px;
+    font-size: 28px;
+    margin-top: 2px;
+    margin-bottom: 30px;
   }
   
   .menu button {
@@ -68,6 +127,10 @@ body {
     background: #0056b3;
     color: white;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
   }
   
   .menu button:hover {
@@ -123,7 +186,8 @@ body {
 
   @media screen and (max-width: 768px) {
     .menu{
-        width: 120px;
+      width: 77%;
+      margin: 10px;
     }
 
     #chatWindow{

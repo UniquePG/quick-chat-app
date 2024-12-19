@@ -4,45 +4,62 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat Application</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
   <div class="chat-container">
+    <div id="header">
+      <h2>Quick Chat Application</h2>
+    </div>
+
     <div class="menu">
       <h3>Chat Options</h3>
-      <button id="privateChatBtn">Private Chat</button>
-      <button id="groupChatBtn">Group Chat</button>
+      <div id="chat-buttons">
+        <a href="/privateChat" id="privateChatBtn">
+          <button>
+            Private Chat <i class="fa-solid fa-user-group"></i>
+          </button>
+
+        </a>
+        <a href="/groupChat" id="groupChatBtn" >
+          <button>
+            Group Chat <i class="fa-solid fa-people-group"></i>
+          </button>
+
+        </a>
+      </div>
     </div>
 
     <!-- Chat section -->
-    <div id="chatSection">
-      <!-- Private Chat Form -->
-      <div id="privateChatForm" class="hidden">
+<!--     <div id="chatSection">
+ -->      <!-- Private Chat Form -->
+     <!--  <div id="privateChatForm" class="hidden">
         <h3>Private Chat</h3>
         <div class="private_chat_inputs">
             <input type="text" id="privateSender" class="private_input" placeholder="Your Name">
             <input type="text" id="privateReceiver" class="private_input" placeholder="Receiver's Name">
         </div>
-        <button id="startPrivateChat">Start Chat</button>
-      </div>
+          <button id="startPrivateChat">Start Chat</button>
+      </div> -->
 
       <!-- Group Chat Form -->
-      <div id="groupChatForm" class="hidden">
+     <!--  <div id="groupChatForm" class="hidden">
         <h3>Group Chat</h3>
         <input type="text" id="groupName" placeholder="Group Name">
         <button id="joinGroupChat">Join Group</button>
-      </div>
+      </div> -->
 
       <!-- Chat Window -->
-      <div id="chatWindow" class="hidden">
+   <!--    <div id="chatWindow" class="hidden">
         <div id="messages"></div>
         <div id="bottom_btn">
             <input type="text" id="messageInput" placeholder="Type a message">
             <button id="sendMessage">Send</button>
 
         </div>
-      </div>
-    </div>
+      </div> -->
+   <!--  </div> -->
   </div>
 
   <script src="/socket.io/socket.io.js"></script>

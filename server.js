@@ -81,6 +81,9 @@ const http = require("http");
 const { Server } = require("socket.io");
 const Redis = require("ioredis");
 
+const path = require("path");
+
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -92,6 +95,16 @@ const redisSubscriber = new Redis(redisUrl);
 
 // Middleware to serve static files
 app.use(express.static("public"));
+
+app.get("/privateChat", (req, res) => {
+  res.sendFile(path.join(__dirname, "/public/views", "privateChat.html"));
+});
+
+app.get("/groupChat", (req, res) => {
+  res.sendFile(path.join(__dirname, "/public/views", "groupChat.html"));
+});
+
+
 
 // Redis connection status
 redisClient.on("connect", () => {
@@ -108,20 +121,20 @@ io.on("connection", (socket) => {
   // Handle joining a private room
   socket.on("join-private-room", ({ sender, receiver }) => {
     const privateRoom = [sender, receiver].sort().join("-");
-    socket.join(privateRoom);
+    socket.join(privateRoom.toLowerCase());
     console.log(`${sender} joined private room: ${privateRoom}`);
   });
 
   // Handle joining a group/channel
   socket.on("join-group", ({ groupName }) => {
-    socket.join(groupName);
-    console.log(`User joined group: ${groupName}`);
+    socket.join(groupName.toLowerCase());
+    console.log(`User joined group: ${groupName.toLowerCase()}`);
   });
 
   // Handle sending messages in private chat
   socket.on("private-message", ({ sender, receiver, message }) => {
     const privateRoom = [sender, receiver].sort().join("-");
-    io.to(privateRoom).emit("receive-message", { sender, message });
+    io.to(privateRoom.toLowerCase()).emit("receive-message", { sender, message });
     console.log(`Private message from ${sender} to ${receiver}: ${message}`);
   });
 
