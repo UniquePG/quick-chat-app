@@ -1,203 +1,240 @@
 const socket = io();
 
-// Group Chat Elements
-const joinGroupChatBtn = document.getElementById('joinGroupChat');
-const chatWindow = document.getElementById('chatWindow');
-const groupChatName = document.getElementById('groupChatName');
-const messages = document.getElementById('messages');
-const messageInput = document.getElementById('messageInput');
-const sendMessageBtn = document.getElementById('sendMessage');
+const joinGroupChatBtn = document.getElementById("joinGroupChat");
+const generateAliasBtn = document.getElementById("generateAlias");
+const themeToggleBtn = document.getElementById("themeToggle");
+const chatWindow = document.getElementById("chatWindow");
+const groupChatName = document.getElementById("groupChatName");
+const roomCodeLabel = document.getElementById("roomCodeLabel");
+const connectionStatus = document.getElementById("connectionStatus");
+const copyRoomBtn = document.getElementById("copyRoom");
+const clearChatBtn = document.getElementById("clearChat");
+const messages = document.getElementById("messages");
+const messageInput = document.getElementById("messageInput");
+const charCounter = document.getElementById("charCounter");
+const sendMessageBtn = document.getElementById("sendMessage");
+const fileInput = document.getElementById("fileInput");
+const mediaIcon = document.getElementById("mediaIcon");
+const filePreview = document.getElementById("filePreview");
+const previewImage = document.getElementById("previewImage");
+const circleLoader = document.getElementById("circle_loader");
 
-const fileInput = document.getElementById('fileInput');
-const mediaIcon = document.getElementById('mediaIcon');
+const groupNameInput = document.getElementById("groupName");
+const groupAliasInput = document.getElementById("groupAlias");
 
-const filePreview = document.getElementById('filePreview');
-const previewImage = document.getElementById('previewImage');
-const removeFileIcon = document.getElementById('removeFileIcon');
-const filePreviewContainer = document.getElementById('filePreviewContainer');
-const circleLoader = document.getElementById('circle_loader');
+let groupName = "";
+let groupAlias = "";
 
-const screenWidth = window.innerWidth;
+function getRandomAlias() {
+  const adjectives = ["Silent", "Neon", "Swift", "Misty", "Nova", "Ghost", "Blue", "Echo"];
+  const nouns = ["Fox", "Comet", "Orbit", "River", "Pulse", "Dawn", "Shade", "Pixel"];
+  const partA = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const partB = nouns[Math.floor(Math.random() * nouns.length)];
+  const id = Math.floor(100 + Math.random() * 900);
+  return `${partA}${partB}${id}`;
+}
 
-let groupName;
+function sanitizeName(value, maxLength = 30) {
+  return value.trim().replace(/\s+/g, " ").slice(0, maxLength);
+}
 
+function setTheme(theme) {
+  document.body.classList.toggle("light", theme === "light");
+  localStorage.setItem("quickChatTheme", theme);
+  themeToggleBtn.innerHTML = theme === "light"
+    ? '<i class="fa-solid fa-sun"></i>'
+    : '<i class="fa-solid fa-moon"></i>';
+}
 
-// open file input on the click on the paper icon
-mediaIcon.addEventListener('click', () => {
-  fileInput.click(); // Programmatically trigger the file input click
+function showToast(text) {
+  const toast = document.createElement("div");
+  toast.className = "status connected";
+  toast.style.position = "fixed";
+  toast.style.bottom = "18px";
+  toast.style.right = "18px";
+  toast.style.zIndex = "50";
+  toast.textContent = text;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 1600);
+}
+
+function resetMediaInput() {
+  fileInput.value = "";
+  previewImage.src = "";
+  filePreview.style.display = "none";
+  mediaIcon.style.display = "block";
+  messageInput.disabled = false;
+}
+
+function renderMessage({ sender, message, mediaUrl }) {
+  const row = document.createElement("div");
+  row.className = `message-row ${sender === groupAlias ? "self" : ""}`;
+
+  const bubble = document.createElement("div");
+  bubble.className = "message-bubble";
+
+  const head = document.createElement("div");
+  head.className = "message-head";
+  head.innerHTML = `<strong>${sender}</strong><span class="message-time">${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>`;
+  bubble.appendChild(head);
+
+  if (mediaUrl) {
+    const mediaElement = document.createElement("img");
+    mediaElement.src = mediaUrl;
+    mediaElement.alt = "shared media";
+    mediaElement.className = "media-preview";
+    bubble.appendChild(mediaElement);
+  } else if (message) {
+    const textElement = document.createElement("div");
+    textElement.textContent = message;
+    bubble.appendChild(textElement);
+  }
+
+  row.appendChild(bubble);
+  messages.appendChild(row);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function updateCounter() {
+  charCounter.textContent = `${messageInput.value.length} / 700`;
+}
+
+generateAliasBtn.addEventListener("click", () => {
+  groupAliasInput.value = getRandomAlias();
 });
 
+themeToggleBtn.addEventListener("click", () => {
+  const nextTheme = document.body.classList.contains("light") ? "dark" : "light";
+  setTheme(nextTheme);
+});
 
-// Show the preview when a file is selected
-fileInput.addEventListener('change', (event) => {
+mediaIcon.addEventListener("click", () => fileInput.click());
+
+fileInput.addEventListener("change", (event) => {
   const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      previewImage.src = e.target.result;
-      mediaIcon.style.display = 'none'; // Hide the paperclip icon
-      filePreview.style.display = 'block'; // Show the file preview
+  if (!file) return;
 
-      if(screenWidth <= 768){
-            filePreviewContainer.style.top = "6px"
-            filePreviewContainer.style.right = "3px"
-      }else{
-        filePreviewContainer.style.top = "6px"
-        filePreviewContainer.style.right = "-20px"
-      }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    previewImage.src = e.target.result;
+    mediaIcon.style.display = "none";
+    filePreview.style.display = "block";
+    messageInput.disabled = true;
+  };
+  reader.readAsDataURL(file);
+});
 
-      messageInput.disabled = true
+previewImage.addEventListener("click", resetMediaInput);
 
-    };
-    reader.readAsDataURL(file);
+joinGroupChatBtn.addEventListener("click", () => {
+  groupName = sanitizeName(groupNameInput.value, 45).toLowerCase();
+  groupAlias = sanitizeName(groupAliasInput.value) || getRandomAlias();
+
+  if (!groupName) {
+    showToast("Room name is required");
+    return;
+  }
+
+  groupNameInput.value = groupName;
+  groupAliasInput.value = groupAlias;
+  groupChatName.textContent = groupName;
+  roomCodeLabel.textContent = `Room: ${groupName}`;
+  localStorage.setItem("quickChatGroupAlias", groupAlias);
+
+  socket.emit("join-group", { groupName });
+  chatWindow.classList.remove("hidden");
+  messageInput.focus();
+});
+
+copyRoomBtn.addEventListener("click", async () => {
+  if (!groupName) return;
+  try {
+    await navigator.clipboard.writeText(groupName);
+    showToast("Room name copied");
+  } catch (error) {
+    showToast("Clipboard unavailable");
   }
 });
 
-
-// Remove the selected file and reset the preview
-previewImage.addEventListener('click', () => {
-  fileInput.value = ''; 
-  previewImage.src = ''; 
-  filePreview.style.display = 'none'; 
-  mediaIcon.style.display = 'block'; 
-
-  if(screenWidth <= 768){
-    filePreviewContainer.style.top = "15px"
-    filePreviewContainer.style.right = "14px"
-
-  }else{
-    filePreviewContainer.style.top = "18px"
-    filePreviewContainer.style.right = "-7px"
-  }
-
-  messageInput.disabled = false
-
+clearChatBtn.addEventListener("click", () => {
+  messages.innerHTML = "";
 });
 
-
-
-// Join Group Chat
-joinGroupChatBtn.addEventListener('click', () => {
-    groupName = document.getElementById('groupName').value;
-
-  if (groupName) {
-    groupChatName.textContent = groupName;
-    socket.emit('join-group', { groupName });
-    chatWindow.classList.remove('hidden');
+messageInput.addEventListener("input", updateCounter);
+messageInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    sendMessageBtn.click();
   }
 });
 
-
-
-// Send Message
-sendMessageBtn.addEventListener('click', () => {
-  const message = messageInput.value;
-
+sendMessageBtn.addEventListener("click", () => {
+  const message = messageInput.value.trim();
   const file = fileInput.files[0];
 
+  if (!groupName) {
+    showToast("Join a room first");
+    return;
+  }
 
   if (file) {
-    // If a file is selected, upload it to the server
     sendMessageBtn.style.display = "none";
     circleLoader.style.display = "block";
-
     const formData = new FormData();
-    formData.append('media', file);
+    formData.append("media", file);
 
-    fetch('/upload', {
-      method: 'POST',
-      body: formData,
-    })
+    fetch("/upload", { method: "POST", body: formData })
       .then((response) => response.json())
       .then((data) => {
         if (data.fileUrl) {
-          // Emit the media URL to the private chat room
-          socket.emit('group-message', {
+          socket.emit("group-message", {
             groupName,
-            sender: 'Anonymous',
+            sender: groupAlias,
             message: data.fileUrl,
-            // message: `<a href="${data.fileUrl}" target="_blank"><img src="${data.fileUrl}" alt="media" style="max-width: 200px;"/></a>`,
           });
-          // appendMessage('You sent a media file.');
-          fileInput.value = ''; // Clear the file input
-          filePreview.style.display = "none";
-          mediaIcon.style.display = 'block';
-
-          if(screenWidth <= 768){
-            filePreviewContainer.style.top = "15px"
-            filePreviewContainer.style.right = "14px"
-
-          }else{
-            filePreviewContainer.style.top = "18px"
-            filePreviewContainer.style.right = "-7px"
-          }
-
-          sendMessageBtn.style.display = "block";
-          circleLoader.style.display = "none";
-          messageInput.disabled = false
+          resetMediaInput();
         }
       })
-      .catch((error) => {
-        console.error('Error uploading file:', error);
+      .catch(() => {
+        showToast("Upload failed");
+      })
+      .finally(() => {
+        sendMessageBtn.style.display = "inline-flex";
+        circleLoader.style.display = "none";
       });
+    return;
+  }
 
-    }else if (message.trim() !== '') {
-
-      socket.emit('group-message', { groupName, sender: 'Anonymous', message });
-      // appendMessage(`You: ${message}`);
-      messageInput.value = ''; // Clear the text input
-    }
-
-
-  // if (message) {
-  //   socket.emit('group-message', { groupName, sender: 'Anonymous', message });
-  //   // appendMessage(`You: ${message}`);
-  //   messageInput.value = '';
-  // }
-});
-
-
-// Receive Message
-socket.on('receive-message', ({ sender, message }) => {
-  // appendMessage(`${sender}: ${message}`);
-  if(message.startsWith("https")){
-    appendMessage({sender, mediaUrl: message});
-
-  }else{
-    appendMessage({sender,message});
+  if (message.length > 0) {
+    socket.emit("group-message", { groupName, sender: groupAlias, message });
+    messageInput.value = "";
+    updateCounter();
   }
 });
 
-
-
-function appendMessage({sender, message, mediaUrl}) {
-  const messageElement = document.createElement("div");
-  
-  // Sender name
-  const senderElement = document.createElement("strong");
-  senderElement.textContent = `${sender}: `;
-  messageElement.appendChild(senderElement);
-
-  // Check if the message contains media or text
-  if (mediaUrl) {
-    // Render media (e.g., image or other supported formats)
-    const mediaElement = document.createElement("img");
-    mediaElement.src = mediaUrl; // Use the media URL
-    mediaElement.alt = "media";
-    mediaElement.style.maxWidth = "200px"; // Restrict max size
-    mediaElement.style.borderRadius = "8px";
-    mediaElement.style.marginTop = "5px";
-    messageElement.appendChild(mediaElement);
-  } else if (message) {
-    // Render text message
-    const textElement = document.createElement("span");
-    textElement.textContent = message;
-    messageElement.appendChild(textElement);
+socket.on("receive-message", ({ sender, message }) => {
+  if (typeof message === "string" && message.startsWith("https")) {
+    renderMessage({ sender, mediaUrl: message });
+  } else {
+    renderMessage({ sender, message });
   }
+});
 
-  // Add the message element to the messages container
-  messages.appendChild(messageElement);
-  messages.scrollTop = messages.scrollHeight;
+socket.on("connect", () => {
+  connectionStatus.textContent = "Connected";
+  connectionStatus.classList.add("connected");
+  connectionStatus.classList.remove("disconnected");
+});
 
+socket.on("disconnect", () => {
+  connectionStatus.textContent = "Disconnected";
+  connectionStatus.classList.add("disconnected");
+  connectionStatus.classList.remove("connected");
+});
 
-}
+(() => {
+  const storedTheme = localStorage.getItem("quickChatTheme") || "dark";
+  setTheme(storedTheme);
+  groupAliasInput.value = localStorage.getItem("quickChatGroupAlias") || getRandomAlias();
+  updateCounter();
+})();

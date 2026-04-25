@@ -3,52 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Private Chat</title>
+  <title>Private Chat | Quick Chat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/privateChat.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-  <div class="chat-container">
-    <h3><a href="/"><i class="fa-solid fa-house"></i></a> Private Chat</h3>
-    <div class="private_chat_section">
-        <div class="left_section">
-            <div class="private_chat_inputs">
-              <input type="text" id="privateSender" class="private_input" placeholder="Your Name">
-              <input type="text" id="privateReceiver" class="private_input" placeholder="Partner's Name">
-            </div>
-            <button id="startChat">Start Chat</button>
+  <div class="chat-app">
+    <header class="topbar">
+      <a href="/" class="home-link" aria-label="Go home"><i class="fa-solid fa-house"></i></a>
+      <div class="topbar-title">
+        <h1>Private Chat</h1>
+        <p>Secure 1:1 anonymous room</p>
+      </div>
+      <button id="themeToggle" class="ghost-btn" type="button">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </header>
+
+    <section class="onboard-card">
+      <h2>Start a private conversation</h2>
+      <p>Create or join with aliases only. Share this room pair with your partner.</p>
+
+      <div class="private_chat_inputs">
+        <input type="text" id="privateSender" class="private_input" placeholder="Your alias">
+        <input type="text" id="privateReceiver" class="private_input" placeholder="Partner alias">
+      </div>
+
+      <div class="onboard-actions">
+        <button id="generateAlias" class="ghost-btn" type="button">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Random Alias
+        </button>
+        <button id="startChat" class="primary-btn" type="button">
+          Start Chat <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <section id="chatWindow" class="chat-window hidden">
+      <div class="chat-meta">
+        <div>
+          <h3><span id="senderName"></span> + <span id="receiverName"></span></h3>
+          <p id="roomCodeLabel">Room: -</p>
         </div>
-    
-        <div id="chatWindow" class="hidden">
-          <h4>Chat between <span id="senderName"></span> and <span id="receiverName"></span></h4>
-          <div id="messages"></div>
-          <div id="bottom_btn">
-            <div id="msgInputGroup">
-              
-              <div id="filePreviewContainer">
-                <i class="fa-solid fa-paperclip" htmlFor="fileInput" id="mediaIcon"></i>
-                      <!-- File Preview -->
-                  <div id="filePreview" style="display: none;">
-                    <img id="previewImage" src="" alt="Preview" />
-                    <!-- <i class="fa-solid fa-circle-xmark" id="removeFileIcon"></i> -->
-                  </div>
+        <div class="chat-meta-actions">
+          <span id="connectionStatus" class="status connected">Connected</span>
+          <button id="copyRoom" class="ghost-btn" type="button"><i class="fa-solid fa-copy"></i> Copy Room</button>
+          <button id="clearChat" class="ghost-btn danger" type="button"><i class="fa-solid fa-trash"></i> Clear</button>
+        </div>
+      </div>
 
-              </div>
+      <div id="messages" aria-live="polite"></div>
+      <p id="typingHint">Press Enter to send</p>
 
-
-              <input type="text" id="messageInput" placeholder="Type a message">
+      <div id="bottom_btn">
+        <div id="msgInputGroup">
+          <div id="filePreviewContainer">
+            <i class="fa-solid fa-paperclip" id="mediaIcon"></i>
+            <div id="filePreview" style="display: none;">
+              <img id="previewImage" src="" alt="Preview" />
             </div>
-            <input type="file" id="fileInput" accept="image/*" style="display: none;" >
-
-            <button id="sendMessage">Send <i class="fa-solid fa-paper-plane"></i></button>
-            <span class="loader" id="circle_loader"></span>
           </div>
+          <input type="text" id="messageInput" maxlength="700" placeholder="Write something kind...">
+          <small id="charCounter">0 / 700</small>
         </div>
-
-    </div>
+        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+        <button id="sendMessage" class="primary-btn" type="button">Send <i class="fa-solid fa-paper-plane"></i></button>
+        <span class="loader" id="circle_loader"></span>
+      </div>
+    </section>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="../js/privateChat.js"></script>
-</body>
+ </body>
 </html>
